@@ -8,7 +8,7 @@ Bundler.require
 
 ROOT_DIR    = File.expand_path(File.dirname(__FILE__))
 LOGGER      = Logger.new(STDOUT)
-BUNDLES     = %w( manifest.json application.css application.js )
+BUNDLES     = %w( manifest.json application.css application.js background.js index.html )
 BUILD_DIR   = "build"
 SOURCE_DIR  = "src/"
 VENDOR_DIR  = "vendor/"
@@ -23,6 +23,8 @@ task :compile do
 
   sprockets = Sprockets::Environment.new(ROOT_DIR) do |env|
     env.logger = LOGGER
+
+    env.register_engine '.slim', Slim::Template
 
     if ENV['TARGET'] == 'production'
       env.js_compressor = Closure::Compiler.new
@@ -80,11 +82,10 @@ task :build => [:advertise_target, :clean, :compile] do
 
   compiled_dir = File.join BUILD_DIR, target
   # copy other resources
-  ['icons',
-   'images',
-   'background.js',
-   'index.html'
-  ].each do |resource|
+  %w(
+    icons
+    images
+  ).each do |resource|
     cmd = "cp -r #{File.join SOURCE_DIR, resource} #{compiled_dir}"
     puts cmd
     system cmd
