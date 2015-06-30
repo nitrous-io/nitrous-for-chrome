@@ -8,10 +8,16 @@ Bundler.require
 
 ROOT_DIR    = File.expand_path(File.dirname(__FILE__))
 LOGGER      = Logger.new(STDOUT)
-BUNDLES     = %w( manifest.json application.css application.js background.js index.html )
 BUILD_DIR   = "build"
 SOURCE_DIR  = "src/"
 VENDOR_DIR  = "vendor/"
+BUNDLES     = %w(
+  manifest.json
+  application.css
+  application.js
+  background.js
+  index.html
+)
 
 task :advertise_target do
   ENV['TARGET'] ||= 'development'
@@ -46,7 +52,8 @@ task :compile do
   sprockets.append_path File.join(ROOT_DIR, SOURCE_DIR)
   sprockets.append_path File.join(ROOT_DIR, SOURCE_DIR, 'javascripts')
   sprockets.append_path File.join(ROOT_DIR, SOURCE_DIR, 'stylesheets')
-  sprockets.append_path File.join(ROOT_DIR, VENDOR_DIR)
+  sprockets.append_path File.join(ROOT_DIR, VENDOR_DIR, 'javascripts')
+  sprockets.append_path File.join(ROOT_DIR, VENDOR_DIR, 'stylesheets')
 
   target = ENV['TARGET']
 
@@ -85,6 +92,7 @@ task :build => [:advertise_target, :clean, :compile] do
   %w(
     icons
     images
+    fonts
   ).each do |resource|
     cmd = "cp -r #{File.join SOURCE_DIR, resource} #{compiled_dir}"
     puts cmd
