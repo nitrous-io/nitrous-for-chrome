@@ -14,7 +14,7 @@
 @font-face
   font-family: 'Roboto'
   src: url('/fonts/Roboto-Medium.ttf') format('truetype')
-  font-weight: 400
+  font-weight: 500
 
 *
   box-sizing: border-box
@@ -34,7 +34,7 @@ body
   color: rgba(white, .2)
   font-weight: 300
 
-#splash, #login
+#splash, #login, #app
   position: absolute
   width: 100%
   height: 100%
@@ -130,12 +130,28 @@ body
       &:disabled
         opacity: .5
 
+    .error
+      position: absolute
+      left: 0
+      width: 100%
+      text-align: center
+      margin-top: 24px
+      font-size: 14px
+      color: $n2oGray200
+
   &.show
     form
       opacity: 1
 
   &.shake
     animation: shake 1s
+
+#app
+  display: block
+
+  webview
+    width: 100%
+    height: 100%
 
 @keyframes shake
   0%
