@@ -1,0 +1,39 @@
+@import 'variables'
+
+.app-splash
+  display: flex
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  align-items: center
+  justify-content: center
+  flex-direction: column
+
+  .logo
+    width: 54px
+    height: 42px
+    background: url(/images/n-logo.svg) no-repeat
+    background-size: 54px 42px
+
+  .version
+    position: absolute
+    bottom: 20px
+    width: 100%
+    text-align: center
+    color: $n2oGray200
+    font-weight: 200
+    font-size: 11px
+
+  transition: opacity .2s
+
+  &.el-enter
+    opacity: 0
+    &.el-enter-active
+      opacity: 1
+
+  &.el-leave
+    opacity: 0
+    &.el-enter-active
+      opacity: 1
