@@ -1,10 +1,15 @@
 R = React.DOM
 
 App.TitleBar = React.createClass
+  getDefaultProps: ->
+    username: null
+    gravatar: null
+
   getInitialState: ->
     focused: false
     minimized: false
     maximized: false
+    gravatarImage: null
 
   componentDidMount: ->
     $(window).focus =>
@@ -24,6 +29,17 @@ App.TitleBar = React.createClass
       else if @state.maximized
         @setState(maximized: false)
 
+  componentDidUpdate: (prevProps, prevState) ->
+    if prevProps.gravatar != @props.gravatar
+      $.ajax(
+        type: 'GET'
+        url: @props.gravatar
+        dataType: 'native'
+        xhrFields:
+          responseType: 'blob'
+      ).then (blob) =>
+        @setState(gravatarImage: URL.createObjectURL(blob))
+
   handleMinimize: ->
     chrome.app.window.current().minimize()
 
@@ -37,7 +53,13 @@ App.TitleBar = React.createClass
     chrome.app.window.current().close()
 
   render: ->
-    R.div className: classNames('title-bar', focused: @state.focused),
+    R.div className: classNames('app-title-bar', focused: @state.focused),
+      R.div className: 'content',
+        if @props.username
+          R.button className: 'account-btn', tabIndex: '-1',
+            R.div className: 'gravatar', style: { backgroundImage: "url(#{@state.gravatarImage})" }
+            R.span className: 'username', @props.username
+            R.span className: 'triangle'
       R.div className: 'window-controls',
         R.button onClick: @handleMinimize, className: 'minimize', tabIndex: '-1'
         if @state.maximized

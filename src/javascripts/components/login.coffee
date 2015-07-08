@@ -17,6 +17,14 @@ App.Login = React.createClass
     elLogin.value = login = elLogin.value.trim()
     elPassword.value = password = elPassword.value.trim()
 
+    fail = (jqxhr) =>
+      if jqxhr.responseJSON?.error != 'invalid_grant'
+        @setState(errorMessage: "#{jqxhr.status} #{jqxhr.statusText} - #{jqxhr.responseJSON?.error || 'error'}: #{jqxhr.responseJSON?.error_description || 'unknown error'}")
+      @setState(shake: true, submitLabel: 'Log In')
+      sleep(1001).then =>
+        @setState(shake: false)
+        @setState(disabled: false)
+
     $.ajax(
       url: App.host + '/api/v0/oauth/token'
       type: 'POST'
@@ -25,15 +33,22 @@ App.Login = React.createClass
         grant_type: 'password'
         username: login
         password: password
-    ).then (data) =>
-      App.token = data.access_token
-    , (jqxhr) =>
-      if jqxhr.responseJSON?.error != 'invalid_grant'
-        @setState(errorMessage: "#{jqxhr.status} #{jqxhr.statusText} - #{jqxhr.responseJSON?.error || 'error'}: #{jqxhr.responseJSON?.error_description || 'unknown error'}")
-      @setState(shake: true, submitLabel: 'Log In')
-      sleep(1001).then =>
-        @setState(shake: false)
-        @setState(disabled: false)
+    ).then((data) =>
+      # token fetched, try fetching user
+      token = new App.Token(data.access_token)
+      token.ajax(
+        url: App.host + '/api/v0/user'
+        type: 'GET'
+        dataType: 'json'
+      ).then((data) =>
+        fail() unless data.user?
+        # user fetched
+        user = new App.User(data.user)
+        App.token = token
+        App.user = user
+        PubSub.publish 'user.loggedIn', user
+      , fail)
+    , fail)
 
   render: ->
     R.div className: classNames('app-login', show: @state.show),

@@ -1,7 +1,10 @@
 #= require jquery-2.1.4
+#= require jquery-ajax-native-1.0.1
 #= require react-with-addons-0.13.3
+#= require pubsub-1.5.2
 #= require classnames-2.1.3
 #= require_self
+#= require_tree ./models
 #= require_tree ./components
 
 window.sleep = (duration) ->
@@ -9,6 +12,13 @@ window.sleep = (duration) ->
     window.setTimeout(->
       resolve()
     , duration)
+
+# coffeescript getter/setter support - http://bl.ocks.org/joyrexus/65cb3780a24ecd50f6df
+Function::getter = (prop, get) ->
+  Object.defineProperty @prototype, prop, {get, configurable: yes}
+
+Function::setter = (prop, set) ->
+  Object.defineProperty @prototype, prop, {set, configurable: yes}
 
 meta = (name) ->
   $("meta[name='#{name}']").eq(0).attr 'content'
@@ -18,6 +28,7 @@ window.App =
   version: meta('AppVersion')
   host: meta('Host')
   token: null
+  user: null
 
 $ ->
   main = React.createElement App.Main
