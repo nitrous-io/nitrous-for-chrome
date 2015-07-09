@@ -57,16 +57,15 @@ task :compile do
 
   target = ENV['TARGET']
 
+  root = Pathname.new(sprockets.root)
+
   BUNDLES.each do |bundle|
     asset = sprockets.find_asset(bundle)
-    prefix = asset.pathname.to_s.split('/')[-2]
-
-    if prefix == 'src'
-      prefix = ''
-    end
-
-    FileUtils.mkpath File.join(BUILD_DIR, target, prefix)
-    asset.write_to File.join(BUILD_DIR, target, prefix, bundle)
+    comps = asset.pathname.relative_path_from(root).to_s.split('/')
+    comps.shift if comps[0] == 'src'
+    pn = Pathname.new(File.join(comps))
+    FileUtils.mkpath File.join(BUILD_DIR, target, pn.dirname)
+    asset.write_to File.join(BUILD_DIR, target, pn.dirname, Pathname.new(bundle).basename.to_s)
   end
 
   puts 'Compiled assets'
