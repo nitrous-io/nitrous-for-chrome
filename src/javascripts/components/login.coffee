@@ -3,7 +3,6 @@ R = React.DOM
 App.Login = React.createClass
   getInitialState: ->
     errorMessage: null
-    show: false
     submitLabel: 'Log In'
     disabled: false
     shake: false
@@ -51,7 +50,7 @@ App.Login = React.createClass
     , fail)
 
   render: ->
-    R.div className: classNames('app-login', show: @state.show),
+    R.div className: 'app-login',
       R.form onSubmit: @handleSubmit, className: classNames(shake: @state.shake),
         R.div className: 'logo'
         R.input ref: 'login', type: 'text', placeholder: 'Username or Email', required: true, disabled: @state.disabled

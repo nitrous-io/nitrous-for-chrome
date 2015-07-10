@@ -1,6 +1,7 @@
 #= require jquery-2.1.4
 #= require jquery-ajax-native-1.0.1
 #= require react-with-addons-0.13.3
+#= require timeout-transition-group-d7afd09
 #= require pubsub-1.5.2
 #= require classnames-2.1.3
 #= require_self

@@ -1,0 +1,14 @@
+@import 'variables'
+
+=react-transition($duration: .2s)
+  transition: opacity $duration
+
+  &.el-enter
+    opacity: 0
+    &.el-enter-active
+      opacity: 1
+
+  &.el-leave
+    opacity: 0
+    &.el-enter-active
+      opacity: 1

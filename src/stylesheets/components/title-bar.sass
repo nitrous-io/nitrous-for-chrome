@@ -12,45 +12,52 @@
     flex-grow: 1
     flex-diretion: row
     align-items: stretch
+    position: relative
     color: white
-    opacity: 0.2
-    transition: opacity .1s
 
-    .account-btn
-      border: none
-      background: transparent
-      padding: 0 8px
-      font-size: 13px
-      transition: background-color .1s
-      -webkit-app-region: no-drag
+    .account-dropdown
+      display: flex
 
-      &:hover
-        background-color: rgba($n2oGray1000, .6)
+      button
+        border: none
+        background: transparent
+        padding: 0 8px
+        font-size: 13px
+        transition: background-color .1s, opacity .1s
+        -webkit-app-region: no-drag
+        opacity: .2
 
-      &:active
-        background-color: rgba($n2oGray1000, .8)
+        &:hover
+          background-color: rgba($n2oGray1000, .6)
 
-      &:focus, &:active
-        outline: none
+        &:active
+          background-color: rgba($n2oGray1000, .8)
 
-      .gravatar
-        display: inline-block
-        width: 18px
-        height: 18px
-        background-color: #ddd
-        background-repeat: no-repeat
-        background-size: 18px 18px
-        border-radius: 2px
-        vertical-align: middle
-        margin-right: 8px
-        position: relative
-        top: -1px
+        &:focus, &:active
+          outline: none
 
-      .triangle
-        display: inline-block
-        border: 3px solid transparent
-        border-top-color: white
-        margin-left: 6px
+        .gravatar
+          display: inline-block
+          width: 18px
+          height: 18px
+          background-color: #ddd
+          background-repeat: no-repeat
+          background-size: 18px 18px
+          border-radius: 2px
+          vertical-align: middle
+          margin-right: 8px
+          position: relative
+          top: -1px
+
+        .triangle
+          display: inline-block
+          border: 3px solid transparent
+          border-top-color: white
+          margin-left: 6px
+
+      &.open
+        button, button:hover
+          background-color: rgba($n2oGray1000, .8)
 
   .window-controls
     flex-shrink: 0
@@ -91,7 +98,8 @@
 
   &.focused
     .content
-      opacity: 1
+      .account-dropdown button
+        opacity: 1
 
     .window-controls
       opacity: 1

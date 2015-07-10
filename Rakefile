@@ -17,6 +17,8 @@ BUNDLES     = %w(
   application.js
   background.js
   index.html
+  injections/dashboard.js
+  injections/dashboard.css
 )
 
 task :advertise_target do

@@ -1,4 +1,6 @@
 R = React.DOM
+Rc = React.createElement
+TimeoutTransitionGroup = React.addons.TimeoutTransitionGroup
 
 App.TitleBar = React.createClass
   getDefaultProps: ->
@@ -9,7 +11,8 @@ App.TitleBar = React.createClass
     focused: false
     minimized: false
     maximized: false
-    gravatarImage: null
+    gravatarImage: 'none'
+    accountDropdownOpen: false
 
   componentDidMount: ->
     $(window).focus =>
@@ -38,7 +41,8 @@ App.TitleBar = React.createClass
         xhrFields:
           responseType: 'blob'
       ).then (blob) =>
-        @setState(gravatarImage: URL.createObjectURL(blob))
+        image = "url(#{URL.createObjectURL(blob)})"
+        @setState(gravatarImage: image)
 
   handleMinimize: ->
     chrome.app.window.current().minimize()
@@ -52,14 +56,29 @@ App.TitleBar = React.createClass
   handleClose: ->
     chrome.app.window.current().close()
 
+  handleAccountBtn: ->
+    @setState(accountDropdownOpen: !@state.accountDropdownOpen)
+
   render: ->
     R.div className: classNames('app-title-bar', focused: @state.focused),
       R.div className: 'content',
         if @props.username
-          R.button className: 'account-btn', tabIndex: '-1',
-            R.div className: 'gravatar', style: { backgroundImage: "url(#{@state.gravatarImage})" }
-            R.span className: 'username', @props.username
-            R.span className: 'triangle'
+          R.div className: classNames('account-dropdown', open: @state.accountDropdownOpen),
+            Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
+              if @state.accountDropdownOpen
+                R.ul key: 'account-dropdown', className: 'dropdown below',
+                  R.li {}, 'Account Settings'
+                  R.li {}, 'Billing'
+                  R.li className: 'separator'
+                  R.li {}, 'Send Feedback'
+                  R.li {}, 'Help'
+                  R.li className: 'separator'
+                  R.li {}, 'Log Out'
+            R.button onClick: @handleAccountBtn, tabIndex: '-1',
+              R.div className: 'gravatar', style: { backgroundImage: @state.gravatarImage }
+              R.span className: 'username', @props.username
+              R.span className: 'triangle'
+
       R.div className: 'window-controls',
         R.button onClick: @handleMinimize, className: 'minimize', tabIndex: '-1'
         if @state.maximized
