@@ -2,6 +2,9 @@ R = React.DOM
 Rc = React.createElement
 
 App.Wrapper = React.createClass
+  getInitialState: ->
+    hide: true
+
   componentDidMount: ->
     webview = React.findDOMNode(@refs.webview)
     webview.setUserAgentOverride(navigator.userAgent + " NitrousProForChrome/#{App.version}")
@@ -18,6 +21,7 @@ App.Wrapper = React.createClass
 
     $webview.on 'contentload', (e) =>
       @injectCode()
+      @setState(hide: false)
 
     $webview.attr(partition: 'persist:nitrous-pro', src: @props.url)
 
@@ -35,4 +39,4 @@ App.Wrapper = React.createClass
 
   render: ->
     R.div className: 'app-wrapper',
-      Rc 'webview', ref: 'webview'
+      Rc 'webview', ref: 'webview', className: classNames(hide: @state.hide)

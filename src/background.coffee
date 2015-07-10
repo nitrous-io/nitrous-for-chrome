@@ -8,3 +8,4 @@ chrome.app.runtime.onLaunched.addListener ->
     frame: 'none'
     minWidth: 800
     minHeight: 600
+    hidden: true
