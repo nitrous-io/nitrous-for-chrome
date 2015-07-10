@@ -56,8 +56,11 @@ App.TitleBar = React.createClass
   handleClose: ->
     chrome.app.window.current().close()
 
-  handleAccountBtn: ->
+  handleAccountButton: ->
     @setState(accountDropdownOpen: !@state.accountDropdownOpen)
+
+  handleLogOut: ->
+    PubSub.publish('user.logOut')
 
   render: ->
     R.div className: classNames('app-title-bar', focused: @state.focused),
@@ -73,8 +76,8 @@ App.TitleBar = React.createClass
                   R.li {}, 'Send Feedback'
                   R.li {}, 'Help'
                   R.li className: 'separator'
-                  R.li {}, 'Log Out'
-            R.button onClick: @handleAccountBtn, tabIndex: '-1',
+                  R.li onClick: @handleLogOut, 'Log Out'
+            R.button onClick: @handleAccountButton, tabIndex: '-1',
               R.div className: 'gravatar', style: { backgroundImage: @state.gravatarImage }
               R.span className: 'username', @props.username
               R.span className: 'triangle'

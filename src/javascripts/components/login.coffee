@@ -35,17 +35,8 @@ App.Login = React.createClass
     ).then((data) =>
       # token fetched, try fetching user
       token = new App.Token(data.access_token)
-      token.ajax(
-        url: App.host + '/api/v0/user'
-        type: 'GET'
-        dataType: 'json'
-      ).then((data) =>
-        fail() unless data.user?
-        # user fetched
-        user = new App.User(data.user)
-        App.token = token
-        App.user = user
-        PubSub.publish 'user.loggedIn', user
+      token.fetchUser().then((user) ->
+        PubSub.publish 'user.loggedIn', user: user, token: token
       , fail)
     , fail)
 

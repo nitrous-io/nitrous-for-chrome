@@ -10,15 +10,33 @@ App.Main = React.createClass
     dashboardUrl: null
 
   componentDidMount: ->
-    PubSub.subscribe 'user.loggedIn', (msg, user) =>
-      @setState user: user
-      App.token.getLoginToken().then (loginToken) =>
+    @subUserLoggedIn = PubSub.subscribe 'user.loggedIn', (msg, data) =>
+      App.token = token = data.token
+      App.user = user = data.user
+      token.persist()
+      token.fetchLoginToken().then (loginToken) =>
         url = App.host + "/token_login?token=#{window.encodeURIComponent(loginToken)}"
-        @setState showLogin: false, showDashboard: true, dashboardUrl: url
+        @setState user: user, showSplash: false, showLogin: false, showDashboard: true, dashboardUrl: url
+
+    @subUserLogout = PubSub.subscribe 'user.logOut', =>
+      App.Token.clear().then ->
+        chrome.runtime.reload()
 
     @setState showSplash: true
-    sleep(2000).then =>
-      @setState showSplash: false, showLogin: true
+
+    showLogin = =>
+      App.Token.clear()
+      sleep(2000).then =>
+        @setState showSplash: false, showLogin: true
+
+    App.Token.load().then((token) ->
+      token.fetchUser().then((user) ->
+        PubSub.publish 'user.loggedIn', user: user, token: token
+      , showLogin)
+    , showLogin)
+
+  componentWillUnmount: ->
+    PubSub.unsubscribe @subUserLoggedIn
 
   render: ->
     R.div className: 'app-main',
