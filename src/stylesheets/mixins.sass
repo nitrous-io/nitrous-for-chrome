@@ -1,14 +1,16 @@
 @import 'variables'
 
-=react-transition($duration: .2s)
-  transition: opacity $duration
-
+=fade-transition($enterDuration: .2s, $exitDuration: .2s)
   &.el-enter
+    transition: opacity $enterDuration
+
     opacity: 0
     &.el-enter-active
       opacity: 1
 
   &.el-leave
+    transition: opacity $exitDuration
+
     opacity: 0
     &.el-enter-active
       opacity: 1
