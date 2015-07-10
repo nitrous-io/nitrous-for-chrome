@@ -57,10 +57,27 @@ App.TitleBar = React.createClass
     chrome.app.window.current().close()
 
   handleAccountButton: ->
-    @setState(accountDropdownOpen: !@state.accountDropdownOpen)
+    @setState accountDropdownOpen: !@state.accountDropdownOpen
 
-  handleLogOut: ->
+  handleAccountMenuAccountSettings: ->
+    PubSub.publish('dashboard.accountSettings')
+    @setState accountDropdownOpen: false
+
+  handleAccountMenuBilling: ->
+    PubSub.publish('dashboard.billing')
+    @setState accountDropdownOpen: false
+
+  handleAccountMenuSendFeedback: ->
+    PubSub.publish('dashboard.sendFeedback')
+    @setState accountDropdownOpen: false
+
+  handleAccountMenuHelp: ->
+    window.open(App.helpUrl)
+    @setState accountDropdownOpen: false
+
+  handleAccountMenuLogOut: ->
     PubSub.publish('user.logOut')
+    @setState accountDropdownOpen: false
 
   render: ->
     R.div className: classNames('app-title-bar', focused: @state.focused),
@@ -70,13 +87,13 @@ App.TitleBar = React.createClass
             Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
               if @state.accountDropdownOpen
                 R.ul key: 'account-dropdown', className: 'dropdown below',
-                  R.li {}, 'Account Settings'
-                  R.li {}, 'Billing'
+                  R.li onClick: @handleAccountMenuAccountSettings, 'Account Settings'
+                  R.li onClick: @handleAccountMenuBilling, 'Billing'
                   R.li className: 'separator'
-                  R.li {}, 'Send Feedback'
-                  R.li {}, 'Help'
+                  R.li onClick: @handleAccountMenuSendFeedback, 'Send Feedback'
+                  R.li onClick: @handleAccountMenuHelp, 'Help'
                   R.li className: 'separator'
-                  R.li onClick: @handleLogOut, 'Log Out'
+                  R.li onClick: @handleAccountMenuLogOut, 'Log Out'
             R.button onClick: @handleAccountButton, tabIndex: '-1',
               R.div className: 'gravatar', style: { backgroundImage: @state.gravatarImage }
               R.span className: 'username', @props.username

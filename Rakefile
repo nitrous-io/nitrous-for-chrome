@@ -17,7 +17,6 @@ BUNDLES     = %w(
   application.js
   background.js
   index.html
-  injections/dashboard.js
   injections/dashboard.css
 )
 
@@ -63,6 +62,10 @@ task :compile do
 
   BUNDLES.each do |bundle|
     asset = sprockets.find_asset(bundle)
+    if asset.nil?
+      puts "ERROR: #{bundle} not found!"
+      exit(1)
+    end
     comps = asset.pathname.relative_path_from(root).to_s.split('/')
     comps.shift if comps[0] == 'src'
     pn = Pathname.new(File.join(comps))

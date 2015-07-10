@@ -37,6 +37,7 @@ App.Main = React.createClass
 
   componentWillUnmount: ->
     PubSub.unsubscribe @subUserLoggedIn
+    PubSub.unsubscribe @subUserLogOut
 
   render: ->
     R.div className: 'app-main',

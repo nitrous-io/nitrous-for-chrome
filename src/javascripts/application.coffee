@@ -28,8 +28,17 @@ window.App =
   name: meta('AppName')
   version: meta('AppVersion')
   host: meta('Host')
+  helpUrl: meta('HelpUrl')
   token: null
   user: null
+
+  injectJS: (webview, js) ->
+    webview.executeScript(code: """
+      s = document.createElement('script');
+      s.innerHTML = "#{js.replace(/"/g, '\\"').replace(/\n/g, '\\n')}";
+      document.body.appendChild(s);
+      s.parentNode.removeChild(s);
+    """)
 
 $ ->
   main = React.createElement App.Main

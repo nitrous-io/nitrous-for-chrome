@@ -13,17 +13,22 @@ App.Wrapper = React.createClass
 
     # make target=_blank work
     $webview.on 'newwindow', (e) ->
-      window.open e.originalEvent.targetUrl
-
-    $webview.on 'loadstart', (e) ->
-
-    $webview.on 'loadstop', (e) =>
+      window.open(e.originalEvent.targetUrl)
 
     $webview.on 'contentload', (e) =>
       @injectCode()
       @setState(hide: false)
 
     $webview.attr(partition: 'persist:nitrous-pro', src: @props.url)
+
+    @subDashboardAccountSettings = PubSub.subscribe 'dashboard.accountSettings', =>
+      App.injectJS(webview, "location.href = '#{App.host}/app/#/account';")
+
+    @subDashboardBilling = PubSub.subscribe 'dashboard.billing', =>
+      App.injectJS(webview, "location.href = '#{App.host}/app/#/billing';")
+
+    @subDashboardSendFeedback = PubSub.subscribe 'dashboard.sendFeedback', =>
+      App.injectJS(webview, "App.trigger('open-feedback-dialog');")
 
   componentWillUnmount: ->
     $webview = $(React.findDOMNode(@refs.webview))
@@ -32,10 +37,18 @@ App.Wrapper = React.createClass
     $webview.off 'loadstop'
     $webview.off 'contentload'
 
+    PubSub.unsubscribe @subDashboardAccountSettings
+    PubSub.unsubscribe @subDashboardBilling
+    PubSub.unsubscribe @subDashboardSendFeedback
+
   injectCode: ->
     webview = React.findDOMNode(@refs.webview)
     webview.insertCSS(file: '/stylesheets/injections/dashboard.css')
-    webview.executeScript(file: '/javascripts/injections/dashboard.js')
+    App.injectJS(webview, """
+      if (window.jQuery) {
+        jQuery('html').addClass('pro-chrome-app');
+      }
+    """)
 
   render: ->
     R.div className: 'app-wrapper',
