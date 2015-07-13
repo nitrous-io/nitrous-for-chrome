@@ -6,13 +6,14 @@ App.TitleBar = React.createClass
   getDefaultProps: ->
     username: null
     gravatar: null
+    currentIdeSession: null
 
   getInitialState: ->
     focused: false
     minimized: false
     maximized: false
     gravatarImage: 'none'
-    accountDropdownOpen: false
+    openMenu: null
 
   componentDidMount: ->
     $(window).focus =>
@@ -57,36 +58,50 @@ App.TitleBar = React.createClass
     chrome.app.window.current().close()
 
   handleAccountButton: ->
-    @setState accountDropdownOpen: !@state.accountDropdownOpen
+    @setState openMenu: toggleMenu(@state.openMenu, 'account')
+    $('body').one 'click', (e) =>
+      if $(e.target).closest('.dropdown button').length == 0
+        @setState openMenu: null
+
+  handleSessionsButton: ->
+    @setState openMenu: toggleMenu(@state.openMenu, 'sessions')
+    $('body').one 'click', (e) =>
+      if $(e.target).closest('.dropdown button').length == 0
+        @setState openMenu: null
 
   handleAccountMenuAccountSettings: ->
+    PubSub.publish('sessions.switch', null)
     PubSub.publish('dashboard.accountSettings')
-    @setState accountDropdownOpen: false
 
   handleAccountMenuBilling: ->
+    PubSub.publish('sessions.switch', null)
     PubSub.publish('dashboard.billing')
-    @setState accountDropdownOpen: false
 
   handleAccountMenuSendFeedback: ->
+    PubSub.publish('sessions.switch', null)
     PubSub.publish('dashboard.sendFeedback')
-    @setState accountDropdownOpen: false
 
   handleAccountMenuHelp: ->
     window.open(App.helpUrl)
-    @setState accountDropdownOpen: false
 
   handleAccountMenuLogOut: ->
     PubSub.publish('user.logOut')
-    @setState accountDropdownOpen: false
+
+  handleSessionsMenuDashboard: ->
+    PubSub.publish('sessions.switch', null)
+
+  handleSessionsMenuIDE: (e) ->
+    ideSessionId = $(e.currentTarget).data('session-id')
+    PubSub.publish('sessions.switch', ideSessionId)
 
   render: ->
     R.div className: classNames('app-title-bar', focused: @state.focused),
       R.div className: 'content',
         if @props.username
-          R.div className: classNames('account-dropdown', open: @state.accountDropdownOpen),
+          R.div className: classNames('account', 'dropdown', open: @state.openMenu == 'account'),
             Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
-              if @state.accountDropdownOpen
-                R.ul key: 'account-dropdown', className: 'dropdown below',
+              if @state.openMenu == 'account'
+                R.ul key: 'account', className: 'ui-dropdown-menu below',
                   R.li onClick: @handleAccountMenuAccountSettings, 'Account Settings'
                   R.li onClick: @handleAccountMenuBilling, 'Billing'
                   R.li className: 'separator'
@@ -97,7 +112,18 @@ App.TitleBar = React.createClass
             R.button onClick: @handleAccountButton, tabIndex: '-1',
               R.div className: 'gravatar', style: { backgroundImage: @state.gravatarImage }
               R.span className: 'username', @props.username
-              R.span className: 'triangle'
+        if @props.username
+          R.div className: classNames('sessions', 'dropdown', open: @state.openMenu == 'sessions'),
+            Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
+              if @state.openMenu == 'sessions'
+                R.ul key: 'sessions', className: 'ui-dropdown-menu below',
+                  R.li onClick: @handleSessionsMenuDashboard, 'Dashboard'
+                  if @props.ideSessions.length > 0
+                    R.li className: 'separator'
+                  @props.ideSessions.map (ideSession) =>
+                    R.li onClick: @handleSessionsMenuIDE, key: ideSession.id, 'data-session-id': ideSession.id, ideSession.slug
+            R.button onClick: @handleSessionsButton, tabIndex: '-1',
+              @props.currentIdeSession?.slug ? 'Dashboard'
 
       R.div className: 'window-controls',
         R.button onClick: @handleMinimize, className: 'minimize', tabIndex: '-1'
@@ -106,3 +132,6 @@ App.TitleBar = React.createClass
         else
           R.button onClick: @handleMaximize, className: 'maximize', tabIndex: '-1'
         R.button onClick: @handleClose, className: 'close', tabIndex: '-1'
+
+toggleMenu = (state, name) ->
+  name unless state == name

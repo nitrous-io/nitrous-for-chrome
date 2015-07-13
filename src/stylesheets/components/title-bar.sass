@@ -5,6 +5,7 @@
   flex-direction: row
   background: $n2oGray900
   height: 32px
+  border-bottom: 1px solid $n2oGray1000
   -webkit-app-region: drag
 
   .content
@@ -15,13 +16,19 @@
     position: relative
     color: white
 
-    .account-dropdown
+    .dropdown
       display: flex
 
+      .ui-dropdown-menu
+        margin-top: 1px
+
       button
+        position: relative
         border: none
-        background: transparent
-        padding: 0 8px
+        background: url(/images/white-triangle.svg) transparent no-repeat
+        background-size: 6px 3px
+        background-position: right 8px center
+        padding: 0 22px 0 8px
         font-size: 13px
         transition: background-color .1s, opacity .1s
         -webkit-app-region: no-drag
@@ -37,27 +44,25 @@
           outline: none
 
         .gravatar
+          position: absolute
+          left: 8px
           display: inline-block
           width: 18px
           height: 18px
-          background-color: #ddd
           background-repeat: no-repeat
           background-size: 18px 18px
           border-radius: 2px
-          vertical-align: middle
-          margin-right: 8px
-          position: relative
-          top: -1px
-
-        .triangle
-          display: inline-block
-          border: 3px solid transparent
-          border-top-color: white
-          margin-left: 6px
 
       &.open
         button, button:hover
           background-color: rgba($n2oGray1000, .8)
+
+        ul.ui-dropdown-menu
+          z-index: 10
+
+      &.account
+        button
+          padding-left: 34px
 
   .window-controls
     flex-shrink: 0
@@ -98,7 +103,7 @@
 
   &.focused
     .content
-      .account-dropdown button
+      .dropdown button
         opacity: 1
 
     .window-controls
