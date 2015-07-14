@@ -138,11 +138,10 @@ App.TitleBar = React.createClass
                 if @state.openMenu == 'sessions'
                   R.ul key: 'sessions', className: 'ui-dropdown-menu below',
                     R.li onClick: @handleSessionsMenuDashboard, 'Dashboard'
-                    if @props.ideSessions.length > 0
-                      R.li className: 'separator'
+                    R.li className: 'separator'
                     @props.ideSessions.map (ideSession) =>
                       R.li onClick: @handleSessionsMenuIDE, key: ideSession.id, 'data-session-id': ideSession.id, ideSession.slug
-              R.button onClick: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'sessions', tabIndex: '-1',
+              R.button onClick: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'sessions', tabIndex: '-1', disabled: @props.ideSessions.length == 0,
                 @props.currentIdeSession?.slug ? 'Dashboard'
 
       R.div className: 'window-controls',
