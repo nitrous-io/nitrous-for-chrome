@@ -57,8 +57,12 @@
         &:focus, &:active
           outline: none
 
-        &:disabled
+        &.disabled
+          cursor: default
           opacity: .1
+
+          &:hover
+            background-color: transparent
 
         .gravatar
           position: absolute
@@ -131,7 +135,7 @@
       .dropdown button
         opacity: 1
 
-        &:disabled
+        &.disabled
           opacity: .5
 
     .window-controls

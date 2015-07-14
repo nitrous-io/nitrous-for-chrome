@@ -61,8 +61,10 @@ App.TitleBar = React.createClass
     chrome.app.window.current().close()
 
   handleMenuButton: (e) ->
-    menu = $(e.currentTarget).data('dropdown-menu')
-    if e.type == 'click'
+    $currentTarget = $(e.currentTarget)
+    return if $currentTarget.is('.disabled')
+    menu = $currentTarget.data('dropdown-menu')
+    if e.type == 'click' || e.type == 'mousedown'
       @setState openMenu: toggleMenu(@state.openMenu, menu)
       @handleBgClick()
     else if e.type == 'mouseover'
@@ -70,8 +72,8 @@ App.TitleBar = React.createClass
         @setState openMenu: menu
 
   handleBgClick: ->
-    $('body').one 'click', (e) =>
-      if $(e.target).closest('.dropdown button').length == 0
+    $('body').one 'mousedown', (e) =>
+      if $(e.target).closest('.dropdown button').length == 0 || $(e.target).is('.dropdown button.disabled')
         @setState openMenu: null
 
   handleAccountMenuAccountSettings: ->
@@ -123,7 +125,7 @@ App.TitleBar = React.createClass
                     R.li onClick: @handleAccountMenuHelp, 'Help'
                     R.li className: 'separator'
                     R.li onClick: @handleAccountMenuLogOut, 'Log Out'
-              R.button onClick: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'account', tabIndex: '-1',
+              R.button onMouseDown: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'account', tabIndex: '-1',
                 R.div className: 'gravatar', style: { backgroundImage: @state.gravatarImage }
                 R.span className: 'username', @props.username
             R.div className: classNames('new', 'dropdown', open: @state.openMenu == 'new'),
@@ -132,7 +134,7 @@ App.TitleBar = React.createClass
                   R.ul key: 'new', className: 'ui-dropdown-menu below',
                     R.li onClick: @handleNewContainer, 'New Container...'
                     R.li onClick: @handleNewWorkspace, 'New Workspace...'
-              R.button onClick: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'new', tabIndex: '-1'
+              R.button onMouseDown: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'new', tabIndex: '-1'
             R.div className: classNames('sessions', 'dropdown', open: @state.openMenu == 'sessions'),
               Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
                 if @state.openMenu == 'sessions'
@@ -141,7 +143,7 @@ App.TitleBar = React.createClass
                     R.li className: 'separator'
                     @props.ideSessions.map (ideSession) =>
                       R.li onClick: @handleSessionsMenuIDE, key: ideSession.id, 'data-session-id': ideSession.id, ideSession.slug
-              R.button onClick: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'sessions', tabIndex: '-1', disabled: @props.ideSessions.length == 0,
+              R.button onMouseDown: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'sessions', className: classNames(disabled: @props.ideSessions.length == 0), tabIndex: '-1',
                 @props.currentIdeSession?.slug ? 'Dashboard'
 
       R.div className: 'window-controls',
