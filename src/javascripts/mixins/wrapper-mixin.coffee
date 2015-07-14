@@ -20,12 +20,19 @@ App.WrapperMixin =
       @injectCode()
       @setState(hide: false)
 
+    $webview.on 'permissionrequest.wrapper', (e) ->
+      oe = e.originalEvent
+      if oe.permission == 'download'
+        window.open(oe.url)
+      e.originalEvent.request.deny()
+
     $webview.attr(partition: 'persist:nitrous-pro', src: @props.url, allowtransparency: 'on')
 
   componentWillUnmount: ->
     $webview = $(React.findDOMNode(@refs.webview))
     $webview.off 'newwindow.wrapper'
     $webview.off 'contentload.wrapper'
+    $webview.off 'permissionrequest.wrapper'
 
   injectCode: ->
     webview = React.findDOMNode(@refs.webview)
