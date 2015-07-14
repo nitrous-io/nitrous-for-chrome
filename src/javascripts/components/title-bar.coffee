@@ -51,8 +51,11 @@ App.TitleBar = React.createClass
   handleRestore: ->
     chrome.app.window.current().restore()
 
-  handleMaximize: ->
-    chrome.app.window.current().maximize()
+  handleMaximize: (e) ->
+    if e.altKey
+      chrome.app.window.current().fullscreen()
+    else
+      chrome.app.window.current().maximize()
 
   handleClose: ->
     chrome.app.window.current().close()
