@@ -37,7 +37,7 @@ window.App =
   injectJS: (webview, js, cb) ->
     webview.executeScript(code: """
       s = document.createElement('script');
-      s.innerHTML = "#{js.replace(/"/g, '\\"').replace(/\n/g, '\\n')}";
+      s.innerHTML = "#{js.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n')}";
       document.body.appendChild(s);
       s.parentNode.removeChild(s);
     """, cb)
