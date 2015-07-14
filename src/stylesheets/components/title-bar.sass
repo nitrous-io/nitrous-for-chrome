@@ -16,6 +16,10 @@
     position: relative
     color: white
 
+    .menu
+      display: flex
+      flex-direction: row
+
     .dropdown
       display: flex
 
@@ -25,14 +29,24 @@
       button
         position: relative
         border: none
-        background: url(/images/white-triangle.svg) transparent no-repeat
-        background-size: 6px 3px
-        background-position: right 8px center
         padding: 0 22px 0 8px
         font-size: 13px
+        background: transparent
         transition: background-color .1s, opacity .1s
         -webkit-app-region: no-drag
         opacity: .2
+
+        &:after
+          content: ''
+          display: block
+          position: absolute
+          top: 0
+          right: 8px
+          width: 6px
+          height: 100%
+          background: url(/images/white-triangle.svg) transparent no-repeat
+          background-size: 6px 3px
+          background-position: center center
 
         &:hover
           background-color: rgba($n2oGray1000, .6)
@@ -63,6 +77,14 @@
       &.account
         button
           padding-left: 34px
+
+      &.new
+        button
+          background-position: 8px center
+          background-repeat: no-repeat
+          background-size: 12px 12px
+          background-image: url(/images/new-white.png)
+          padding-right: 32px
 
   .window-controls
     flex-shrink: 0
@@ -111,6 +133,11 @@
 
 @media (min-device-pixel-ratio: 2), (min-resolution: 192dpi)
   .app-title-bar
+    .content
+      .dropdown.new
+        button
+          background-image: url(/images/new-white@2x.png)
+
     .window-controls
       button
         &.minimize

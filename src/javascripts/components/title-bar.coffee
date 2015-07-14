@@ -59,12 +59,17 @@ App.TitleBar = React.createClass
 
   handleAccountButton: ->
     @setState openMenu: toggleMenu(@state.openMenu, 'account')
-    $('body').one 'click', (e) =>
-      if $(e.target).closest('.dropdown button').length == 0
-        @setState openMenu: null
+    @handleBgClick()
 
   handleSessionsButton: ->
     @setState openMenu: toggleMenu(@state.openMenu, 'sessions')
+    @handleBgClick()
+
+  handleNewButton: ->
+    @setState openMenu: toggleMenu(@state.openMenu, 'new')
+    @handleBgClick()
+
+  handleBgClick: ->
     $('body').one 'click', (e) =>
       if $(e.target).closest('.dropdown button').length == 0
         @setState openMenu: null
@@ -94,36 +99,51 @@ App.TitleBar = React.createClass
     ideSessionId = $(e.currentTarget).data('session-id')
     PubSub.publish('sessions.switch', ideSessionId)
 
+  handleNewContainer: ->
+    PubSub.publish('sessions.switch', null)
+    PubSub.publish('dashboard.newContainer')
+
+  handleNewWorkspace: ->
+    PubSub.publish('sessions.switch', null)
+    PubSub.publish('dashboard.newWorkspace')
+
   render: ->
     R.div className: classNames('app-title-bar', focused: @state.focused),
       R.div className: 'content',
         if @props.username
-          R.div className: classNames('account', 'dropdown', open: @state.openMenu == 'account'),
-            Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
-              if @state.openMenu == 'account'
-                R.ul key: 'account', className: 'ui-dropdown-menu below',
-                  R.li onClick: @handleAccountMenuAccountSettings, 'Account Settings'
-                  R.li onClick: @handleAccountMenuBilling, 'Billing'
-                  R.li className: 'separator'
-                  R.li onClick: @handleAccountMenuSendFeedback, 'Send Feedback'
-                  R.li onClick: @handleAccountMenuHelp, 'Help'
-                  R.li className: 'separator'
-                  R.li onClick: @handleAccountMenuLogOut, 'Log Out'
-            R.button onClick: @handleAccountButton, tabIndex: '-1',
-              R.div className: 'gravatar', style: { backgroundImage: @state.gravatarImage }
-              R.span className: 'username', @props.username
-        if @props.username
-          R.div className: classNames('sessions', 'dropdown', open: @state.openMenu == 'sessions'),
-            Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
-              if @state.openMenu == 'sessions'
-                R.ul key: 'sessions', className: 'ui-dropdown-menu below',
-                  R.li onClick: @handleSessionsMenuDashboard, 'Dashboard'
-                  if @props.ideSessions.length > 0
+          R.div className: 'menu',
+            R.div className: classNames('account', 'dropdown', open: @state.openMenu == 'account'),
+              Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
+                if @state.openMenu == 'account'
+                  R.ul key: 'account', className: 'ui-dropdown-menu below',
+                    R.li onClick: @handleAccountMenuAccountSettings, 'Account Settings'
+                    R.li onClick: @handleAccountMenuBilling, 'Billing'
                     R.li className: 'separator'
-                  @props.ideSessions.map (ideSession) =>
-                    R.li onClick: @handleSessionsMenuIDE, key: ideSession.id, 'data-session-id': ideSession.id, ideSession.slug
-            R.button onClick: @handleSessionsButton, tabIndex: '-1',
-              @props.currentIdeSession?.slug ? 'Dashboard'
+                    R.li onClick: @handleAccountMenuSendFeedback, 'Send Feedback'
+                    R.li onClick: @handleAccountMenuHelp, 'Help'
+                    R.li className: 'separator'
+                    R.li onClick: @handleAccountMenuLogOut, 'Log Out'
+              R.button onClick: @handleAccountButton, tabIndex: '-1',
+                R.div className: 'gravatar', style: { backgroundImage: @state.gravatarImage }
+                R.span className: 'username', @props.username
+            R.div className: classNames('new', 'dropdown', open: @state.openMenu == 'new'),
+              Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
+                if @state.openMenu == 'new'
+                  R.ul key: 'new', className: 'ui-dropdown-menu below',
+                    R.li onClick: @handleNewContainer, 'New Container...'
+                    R.li onClick: @handleNewWorkspace, 'New Workspace...'
+              R.button onClick: @handleNewButton, tabIndex: '-1'
+            R.div className: classNames('sessions', 'dropdown', open: @state.openMenu == 'sessions'),
+              Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
+                if @state.openMenu == 'sessions'
+                  R.ul key: 'sessions', className: 'ui-dropdown-menu below',
+                    R.li onClick: @handleSessionsMenuDashboard, 'Dashboard'
+                    if @props.ideSessions.length > 0
+                      R.li className: 'separator'
+                    @props.ideSessions.map (ideSession) =>
+                      R.li onClick: @handleSessionsMenuIDE, key: ideSession.id, 'data-session-id': ideSession.id, ideSession.slug
+              R.button onClick: @handleSessionsButton, tabIndex: '-1',
+                @props.currentIdeSession?.slug ? 'Dashboard'
 
       R.div className: 'window-controls',
         R.button onClick: @handleMinimize, className: 'minimize', tabIndex: '-1'
