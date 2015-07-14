@@ -14,9 +14,11 @@ App.IDE = React.createClass
     webview = React.findDOMNode(@refs.webview)
     $webview = $(webview)
 
-    $webview.on 'dialog.ide', (e) =>
+    $webview.on 'dialog.ide', (e) ->
       e.preventDefault()
-      e.originalEvent.dialog.ok()
+      oe = e.originalEvent
+      dialog = new App.Dialog(type: oe.messageType, text: oe.messageText, controller: oe.dialog)
+      PubSub.publish 'ui.openDialog', dialog
 
     $webview.on 'contentload.ide', (e) =>
       App.injectJS webview, """
@@ -35,7 +37,9 @@ App.IDE = React.createClass
               var $close = $('<li><a href="#" title="Close IDE"><i class="fa fa-times"></i></a></li>');
               $close.on('click', function(e) {
                 e.preventDefault();
-                source.postMessage('close-#{@id}', '*');
+                if (window.confirm("Are you sure you want to close this IDE session?\\n\\nYou will lose any unsaved work.")) {
+                  source.postMessage('close-#{@id}', '*');
+                }
               });
               this.$('.topnav .secondary-nav ul.nav li.ui.dropdown').before($close);
               if (fn) {

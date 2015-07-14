@@ -11,6 +11,7 @@ App.Main = React.createClass
     dashboardUrl: null
     ideSessions: []
     currentIdeSession: null # null = dashboard
+    dialog: null
 
   componentDidMount: ->
     @subUserLoggedIn = PubSub.subscribe 'user.loggedIn', (msg, data) =>
@@ -45,6 +46,12 @@ App.Main = React.createClass
       ideSessions.splice(i, 1)
       @setState ideSessions: ideSessions, currentIdeSession: null
 
+    @subUiOpenDialog = PubSub.subscribe 'ui.openDialog', (msg, dialog) =>
+      @setState dialog: dialog
+
+    @subUiCloseDialog = PubSub.subscribe 'ui.closeDialog', =>
+      @setState dialog: null
+
     @setState showSplash: true
 
     showLogin = =>
@@ -64,6 +71,8 @@ App.Main = React.createClass
     PubSub.unsubscribe @subSessionsNewIde
     PubSub.unsubscribe @subSessionsSwitch
     PubSub.unsubscribe @subSessionsClose
+    PubSub.unsubscribe @subUiOpenDialog
+    PubSub.unsubscribe @subUiCloseDialog
 
   render: ->
     R.div className: 'app-main',
@@ -74,7 +83,9 @@ App.Main = React.createClass
         if @state.showLogin
           Rc App.Login, key: 'login'
         if @state.showWebApp
-          R.div className: 'app-web-app',
+          R.div key: 'web-app', className: 'app-web-app',
             Rc App.Dashboard, key: 'dashboard', url: @state.dashboardUrl, active: @state.currentIdeSession == null
             @state.ideSessions.map (ideSession) =>
               Rc App.IDE, key: ideSession.id, url: ideSession.url, ideSessionId: ideSession.id, active: @state.currentIdeSession?.id == ideSession.id
+        if @state.dialog
+          Rc App.DialogView, key: 'dialog', type: @state.dialog.type ? 'alert', text: @state.dialog.text, controller: @state.dialog.controller
