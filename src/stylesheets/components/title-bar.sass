@@ -26,7 +26,7 @@
       .ui-dropdown-menu
         margin-top: 1px
 
-      button
+      > button
         position: relative
         border: none
         padding: 0 22px 0 8px
@@ -76,18 +76,18 @@
           border-radius: 2px
 
       &.open
-        button, button:hover
+        > button, > button:hover
           background-color: rgba($n2oGray1000, .8)
 
         ul.ui-dropdown-menu
           z-index: 10
 
       &.account
-        button
+        > button
           padding-left: 34px
 
       &.new
-        button
+        > button
           background-position: 8px center
           background-repeat: no-repeat
           background-size: 12px 12px
@@ -95,9 +95,37 @@
           padding-right: 32px
 
       &.sessions
-        button:after
+        > button:after
           background-image: url(/images/double-triangle.svg)
           background-size: 6px 8px
+
+        li
+          padding-right: 44px
+          white-space: nowrap
+
+        .close-ide
+          position: absolute
+          display: inline-block
+          width: 20px
+          height: 20px
+          margin-top: 6px
+          right: 12px
+          background: center center no-repeat
+          background-size: 12px 12px
+          background-color: transparent
+          background-image: url(/images/close-white.png)
+          border-radius: 10px
+          opacity: .5
+          transition: background-color .1s
+
+          &:hover
+            background-color: rgba($n2oGray900, .6)
+
+          &:focus
+            outline: none
+
+          &:active
+            background-color: rgba($n2oGray900, .9)
 
   .window-controls
     flex-shrink: 0
@@ -138,11 +166,12 @@
 
   &.focused
     .content
-      .dropdown button
-        opacity: 1
+      .dropdown
+        > button
+          opacity: 1
 
-        &.disabled
-          opacity: .5
+          &.disabled
+            opacity: .5
 
     .window-controls
       opacity: 1
@@ -151,7 +180,7 @@
   .app-title-bar
     .content
       .dropdown.new
-        button
+        > button
           background-image: url(/images/new-white@2x.png)
 
     .window-controls

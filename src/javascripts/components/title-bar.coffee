@@ -101,6 +101,17 @@ App.TitleBar = React.createClass
     ideSessionId = $(e.currentTarget).data('session-id')
     PubSub.publish('sessions.switch', ideSessionId)
 
+  handleSessionsMenuCloseIDE: (e) ->
+    $parent = $(e.currentTarget).parent()
+    ideSessionId = $parent.data('session-id')
+    slug = $parent.data('slug')
+    dialog = new App.Dialog
+      type: 'confirm'
+      text: "Are you sure you want to close the IDE session for “#{slug}”?\n\nYou will lose any unsaved work."
+      ok: ->
+        PubSub.publish('sessions.close', ideSessionId)
+    PubSub.publish('ui.openDialog', dialog)
+
   handleNewContainer: ->
     PubSub.publish('sessions.switch', null)
     PubSub.publish('dashboard.newContainer')
@@ -142,7 +153,9 @@ App.TitleBar = React.createClass
                     R.li onClick: @handleSessionsMenuDashboard, 'Dashboard'
                     R.li className: 'separator'
                     @props.ideSessions.map (ideSession) =>
-                      R.li onClick: @handleSessionsMenuIDE, key: ideSession.id, 'data-session-id': ideSession.id, ideSession.slug
+                      R.li onClick: @handleSessionsMenuIDE, key: ideSession.id, 'data-session-id': ideSession.id, 'data-slug': ideSession.slug,
+                        ideSession.slug
+                        R.a onClick: @handleSessionsMenuCloseIDE, className: 'close-ide', href: '#', tabIndex: '-1'
               R.button onClick: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'sessions', className: classNames(disabled: @props.ideSessions.length == 0), tabIndex: '-1',
                 @props.currentIdeSession?.slug ? 'Dashboard'
 
