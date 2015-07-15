@@ -5,17 +5,24 @@ App.DialogView = React.createClass
   getDefaultProps: ->
     type: null
     text: null
-    controller: null
+    ok: null
+    cancel: null
 
   componentDidMount: ->
     @previouslyFocusedElement = document.activeElement
+    @focus()
+
+  componentDidUpdate: ->
+    @focus()
+
+  componentWillUnmount: ->
+    @previouslyFocusedElement?.focus?()
+
+  focus: ->
     if @refs.input
       $(React.findDOMNode(@refs.input)).select().focus()
     else
       $(React.findDOMNode(@refs.ok)).focus()
-
-  componentWillUnmount: ->
-    @previouslyFocusedElement?.focus?()
 
   handleKeyDown: (e) ->
     switch e.nativeEvent.keyCode
@@ -24,12 +31,12 @@ App.DialogView = React.createClass
     true
 
   handleCancel: ->
-    @props.controller?.cancel()
+    @props.cancel?()
     PubSub.publish 'ui.closeDialog'
     true
 
   handleOK: ->
-    @props.controller?.ok(React.findDOMNode(@refs.input)?.value)
+    @props.ok?(React.findDOMNode(@refs.input)?.value)
     PubSub.publish 'ui.closeDialog'
     true
 

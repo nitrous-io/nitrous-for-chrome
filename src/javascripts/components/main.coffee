@@ -88,4 +88,4 @@ App.Main = React.createClass
             @state.ideSessions.map (ideSession) =>
               Rc App.IDE, key: ideSession.id, url: ideSession.url, ideSessionId: ideSession.id, active: @state.currentIdeSession?.id == ideSession.id
         if @state.dialog
-          Rc App.DialogView, key: 'dialog', type: @state.dialog.type ? 'alert', text: @state.dialog.text, controller: @state.dialog.controller
+          Rc App.DialogView, key: 'dialog', type: @state.dialog.type ? 'alert', text: @state.dialog.text, ok: @state.dialog.ok, cancel: @state.dialog.cancel

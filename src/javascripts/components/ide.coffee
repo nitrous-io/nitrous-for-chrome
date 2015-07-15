@@ -17,7 +17,13 @@ App.IDE = React.createClass
     $webview.on 'dialog.ide', (e) ->
       e.preventDefault()
       oe = e.originalEvent
-      dialog = new App.Dialog(type: oe.messageType, text: oe.messageText, controller: oe.dialog)
+      dialog = new App.Dialog
+        type: oe.messageType
+        text: oe.messageText
+        ok: (str) ->
+          oe.dialog?.ok?(str)
+        cancel: ->
+          oe.dialog?.cancel?()
       PubSub.publish 'ui.openDialog', dialog
 
     $webview.on 'contentload.ide', (e) =>
