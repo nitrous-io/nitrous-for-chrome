@@ -33,6 +33,7 @@ window.App =
   helpUrl: meta('HelpUrl')
   token: null
   user: null
+  platform: null
 
   injectJS: (webview, js, cb) ->
     webview.executeScript(code: """
@@ -43,5 +44,7 @@ window.App =
     """, cb)
 
 $ ->
-  main = React.createElement App.Main
-  React.render main, $('#app')[0]
+  chrome.runtime.getPlatformInfo (platform) ->
+    App.platform = platform
+    main = React.createElement App.Main
+    React.render main, document.getElementById('app')

@@ -58,7 +58,7 @@ App.TitleBar = React.createClass
       chrome.app.window.current().maximize()
 
   handleClose: ->
-    chrome.app.window.current().close()
+    PubSub.publish 'app.confirmClose'
 
   handleMenuButton: (e) ->
     $currentTarget = $(e.currentTarget)

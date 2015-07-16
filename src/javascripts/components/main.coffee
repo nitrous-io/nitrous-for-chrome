@@ -14,6 +14,27 @@ App.Main = React.createClass
     dialog: null
 
   componentDidMount: ->
+    $(window).on 'keydown.main', (e) ->
+      if App.platform.os == 'mac'
+        if e.metaKey && (e.keyCode == 81 || e.keyCode == 87) # Cmd-Q / Cmd-W
+          e.preventDefault()
+          PubSub.publish 'app.confirmClose'
+      else
+        if (e.ctrlKey && e.keyCode == 87) || # Ctrl-W
+           (e.altKey && e.keyCode == 115)    # Alt-F4
+          e.preventDefault()
+          PubSub.publish 'app.confirmClose'
+
+    @subAppConfirmClose = PubSub.subscribe 'app.confirmClose', =>
+      win = chrome.app.window.current()
+      dialog = new App.Dialog
+        type: 'confirm'
+        text: "Are you sure you want to close Nitrous?\n\nYou will lose any unsaved work."
+        ok: =>
+          @quit()
+      win.focus()
+      PubSub.publish('ui.openDialog', dialog)
+
     @subUserLoggedIn = PubSub.subscribe 'user.loggedIn', (msg, data) =>
       App.token = token = data.token
       App.user = user = data.user
@@ -66,6 +87,7 @@ App.Main = React.createClass
     , showLogin)
 
   componentWillUnmount: ->
+    PubSub.unsubscribe @subAppConfirmClose
     PubSub.unsubscribe @subUserLoggedIn
     PubSub.unsubscribe @subUserLogOut
     PubSub.unsubscribe @subSessionsNewIde
@@ -73,6 +95,16 @@ App.Main = React.createClass
     PubSub.unsubscribe @subSessionsClose
     PubSub.unsubscribe @subUiOpenDialog
     PubSub.unsubscribe @subUiCloseDialog
+    $(window).off 'keydown.main'
+
+  quit: ->
+    win = chrome.app.window.current()
+    win.hide()
+    PubSub.publish 'app.beforeClose'
+    @setState ideSessions: []
+    window.setTimeout(->
+      win.close()
+    , 1000)
 
   render: ->
     R.div className: 'app-main',
