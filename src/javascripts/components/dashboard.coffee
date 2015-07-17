@@ -25,19 +25,22 @@ App.Dashboard = React.createClass
     , urls: [App.host + "/ide*"], ['blocking'])
 
     @subDashboardAccountSettings = PubSub.subscribe 'dashboard.accountSettings', =>
-      App.injectJS(webview, "location.href = '#{App.host}/app/#/account';")
+      App.injectJS(webview, "location.hash = '#/account';")
 
     @subDashboardBilling = PubSub.subscribe 'dashboard.billing', =>
-      App.injectJS(webview, "location.href = '#{App.host}/app/#/billing';")
+      App.injectJS(webview, "location.hash = '#/billing';")
 
     @subDashboardSendFeedback = PubSub.subscribe 'dashboard.sendFeedback', =>
       App.injectJS(webview, "App.trigger('open-feedback-dialog');")
 
     @subDashboardNewContainer = PubSub.subscribe 'dashboard.newContainer', =>
-      App.injectJS(webview, "location.href = '#{App.host}/app/#/containers/new';")
+      App.injectJS(webview, "location.hash = '#/containers/new';")
 
     @subDashboardNewWorkspace = PubSub.subscribe 'dashboard.newWorkspace', =>
-      App.injectJS(webview, "location.href = '#{App.host}/app/#/workspaces/new';")
+      App.injectJS(webview, "location.hash = '#/workspaces/new';")
+
+    @subDashboardGoToRoute = PubSub.subscribe 'dashboard.goToRoute', (msg, route) =>
+      App.injectJS(webview, "location.hash = '##{route.replace(/'/g, "\\'")}';")
 
   componentWillUnmount: ->
     PubSub.unsubscribe @subDashboardAccountSettings
@@ -45,6 +48,7 @@ App.Dashboard = React.createClass
     PubSub.unsubscribe @subDashboardSendFeedback
     PubSub.unsubscribe @subDashboardNewContainer
     PubSub.unsubscribe @subDashboardNewWorkspace
+    PubSub.unsubscribe @subDashboardGoToRoute
 
   render: ->
     R.div className: classNames('app-wrapper', 'app-dashboard', active: @props.active),

@@ -43,7 +43,7 @@ App.Main = React.createClass
       App.user = user = data.user
       token.persist()
       token.fetchLoginToken().then (loginToken) =>
-        url = App.host + "/token_login?token=#{window.encodeURIComponent(loginToken)}"
+        url = App.host + "/token_login?redirect_to=%2Fapp%2F%23%2F&token=#{window.encodeURIComponent(loginToken)}"
         @setState user: user, showSplash: false, showLogin: false, showWebApp: true, dashboardUrl: url
 
     @subUserLogout = PubSub.subscribe 'user.logOut', =>

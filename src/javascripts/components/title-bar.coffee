@@ -82,16 +82,16 @@ App.TitleBar = React.createClass
         @setState openMenu: null
 
   handleAccountMenuAccountSettings: ->
-    PubSub.publish('sessions.switch', null)
     PubSub.publish('dashboard.accountSettings')
+    PubSub.publish('sessions.switch', null)
 
   handleAccountMenuBilling: ->
-    PubSub.publish('sessions.switch', null)
     PubSub.publish('dashboard.billing')
+    PubSub.publish('sessions.switch', null)
 
   handleAccountMenuSendFeedback: ->
-    PubSub.publish('sessions.switch', null)
     PubSub.publish('dashboard.sendFeedback')
+    PubSub.publish('sessions.switch', null)
 
   handleAccountMenuHelp: ->
     window.open(App.helpUrl)
@@ -118,12 +118,12 @@ App.TitleBar = React.createClass
     PubSub.publish('ui.openDialog', dialog)
 
   handleNewContainer: ->
-    PubSub.publish('sessions.switch', null)
     PubSub.publish('dashboard.newContainer')
+    PubSub.publish('sessions.switch', null)
 
   handleNewWorkspace: ->
-    PubSub.publish('sessions.switch', null)
     PubSub.publish('dashboard.newWorkspace')
+    PubSub.publish('sessions.switch', null)
 
   render: ->
     R.div className: classNames('app-title-bar', focused: @state.focused),

@@ -14,7 +14,14 @@ App.WrapperMixin =
 
     # make target=_blank work
     $webview.on 'newwindow.wrapper', (e) ->
-      window.open(e.originalEvent.targetUrl)
+      url = e.originalEvent.targetUrl
+      prefix = App.host + '/app/#'
+      if url.startsWith(prefix)
+        route = url.slice(prefix.length)
+        PubSub.publish('dashboard.goToRoute', route)
+        PubSub.publish('sessions.switch', null)
+      else
+        window.open(url)
 
     $webview.on 'contentload.wrapper', (e) =>
       @injectCode()
