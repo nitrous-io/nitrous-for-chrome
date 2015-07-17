@@ -25,6 +25,9 @@ App.Main = React.createClass
           e.preventDefault()
           PubSub.publish 'app.confirmClose'
 
+    $(window).on 'focus.main', ->
+      $('.app-wrapper.active > webview').focus()
+
     @subAppConfirmClose = PubSub.subscribe 'app.confirmClose', =>
       win = chrome.app.window.current()
       dialog = new App.Dialog
@@ -96,6 +99,7 @@ App.Main = React.createClass
     PubSub.unsubscribe @subUiOpenDialog
     PubSub.unsubscribe @subUiCloseDialog
     $(window).off 'keydown.main'
+    $(window).off 'focus.main'
 
   quit: ->
     win = chrome.app.window.current()

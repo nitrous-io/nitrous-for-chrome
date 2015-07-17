@@ -16,10 +16,11 @@ App.TitleBar = React.createClass
     openMenu: null
 
   componentDidMount: ->
-    $(window).focus =>
+    $(window).on 'focus.title-bar', =>
       @setState(focused: true)
-    $(window).blur =>
-      @setState(focused: false)
+    $(window).on 'blur.title-bar', =>
+      $('body').off 'click.title-bar'
+      @setState(focused: false, openMenu: null)
     @setState(focused: document.hasFocus())
     chrome.app.window.current().onFullscreened.addListener =>
       @setState(maximized: true)
@@ -44,6 +45,10 @@ App.TitleBar = React.createClass
       ).then (blob) =>
         image = "url(#{URL.createObjectURL(blob)})"
         @setState(gravatarImage: image)
+
+  componentWillUnmount: ->
+    $(window).off 'focus.title-bar'
+    $(window).off 'blur.title-bar'
 
   handleMinimize: ->
     chrome.app.window.current().minimize()
@@ -72,7 +77,7 @@ App.TitleBar = React.createClass
         @setState openMenu: menu
 
   handleBgClick: ->
-    $('body').one 'click', (e) =>
+    $('body').one 'click.title-bar', (e) =>
       if $(e.target).closest('.dropdown button').length == 0 || $(e.target).is('.dropdown button.disabled')
         @setState openMenu: null
 
