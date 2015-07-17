@@ -47,8 +47,8 @@ App.Main = React.createClass
         @setState user: user, showSplash: false, showLogin: false, showWebApp: true, dashboardUrl: url
 
     @subUserLogout = PubSub.subscribe 'user.logOut', =>
-      App.Token.clear().then ->
-        chrome.runtime.reload()
+      App.Token.clear().then =>
+        @quit(true)
 
     @subSessionsNewIde = PubSub.subscribe 'sessions.newIde', (msg, slug) =>
       ideSessions = @state.ideSessions.slice()
@@ -101,13 +101,16 @@ App.Main = React.createClass
     $(window).off 'keydown.main'
     $(window).off 'focus.main'
 
-  quit: ->
+  quit: (reload=false) ->
     win = chrome.app.window.current()
-    win.hide()
+    win.hide() unless reload
     PubSub.publish 'app.beforeClose'
     @setState ideSessions: []
     window.setTimeout(->
-      win.close()
+      if reload
+        chrome.runtime.reload()
+      else
+        win.close()
     , 1000)
 
   render: ->
