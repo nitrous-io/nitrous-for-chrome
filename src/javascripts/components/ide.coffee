@@ -26,9 +26,22 @@ App.IDE = React.createClass
           oe.dialog?.cancel?()
       PubSub.publish 'ui.openDialog', dialog
 
+    $webview.on 'keydown.ide', (e) ->
+      if App.platform.os == 'mac'
+        if e.metaKey && e.keyCode == 87 # Cmd-W
+          e.preventDefault()
+          e.stopPropagation()
+          App.injectJS e.target, "if (window.Mousetrap) { Mousetrap.trigger('command+w'); }"
+      else
+        if e.ctrlKey && e.keyCode == 87 # Ctrl-W
+          e.preventDefault()
+          e.stopPropagation()
+          App.injectJS e.target, "if (window.Mousetrap) { Mousetrap.trigger('ctrl+w'); }"
+
   componentWillUnmount: ->
     $webview = $(React.findDOMNode(@refs.webview))
     $webview.off 'dialog.ide'
+    $webview.off 'keydown.ide'
 
   render: ->
     R.div className: classNames('app-wrapper', 'app-ide', active: @props.active),
