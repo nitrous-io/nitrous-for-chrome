@@ -40,6 +40,12 @@ App.Login = React.createClass
       , fail)
     , fail)
 
+  handleSignUp: ->
+    window.open(App.host + '/app/#/signup')
+
+  handleResetPassword: ->
+    window.open(App.host + '/app/#/forgot-password')
+
   render: ->
     R.div className: 'app-login',
       R.form onSubmit: @handleSubmit, className: classNames(shake: @state.shake),
@@ -48,3 +54,8 @@ App.Login = React.createClass
         R.input ref: 'password', type: 'password', placeholder: 'Password', required: true, disabled: @state.disabled
         R.input type: 'submit', value: @state.submitLabel, disabled: @state.disabled
         R.div className: 'error', @state.errorMessage
+      R.ul className: 'links',
+        R.li {},
+          R.a onClick: @handleSignUp, href: '#', 'Sign Up'
+        R.li {},
+          R.a onClick: @handleResetPassword, href: '#', 'Reset Password'

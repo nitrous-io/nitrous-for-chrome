@@ -12,6 +12,27 @@
   justify-content: center
   flex-direction: column
 
+  ul.links
+    margin: 36px 0 0 0
+    padding: 0
+    list-style: none
+
+    li
+      display: inline-block
+      margin-right: 16px
+
+      &:last-of-type
+        margin-right: 0
+
+      a
+        color: $n2oGray200
+        font-size: 13px
+        text-decoration: none
+        transition: color .15s
+
+        &:hover
+          color: $n2oGray100
+
   form
     position: relative
     width: 250px
