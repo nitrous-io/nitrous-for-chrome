@@ -89,6 +89,9 @@ App.TitleBar = React.createClass
     PubSub.publish('dashboard.billing')
     PubSub.publish('sessions.switch', null)
 
+  handleAccountMenuReloadPage: ->
+    PubSub.publish('sessions.reloadPage')
+
   handleAccountMenuSendFeedback: ->
     PubSub.publish('dashboard.sendFeedback')
     PubSub.publish('sessions.switch', null)
@@ -136,6 +139,8 @@ App.TitleBar = React.createClass
                   R.ul key: 'account', className: 'ui-dropdown-menu below',
                     R.li onClick: @handleAccountMenuAccountSettings, 'Account Settings'
                     R.li onClick: @handleAccountMenuBilling, 'Billing'
+                    R.li className: 'separator'
+                    R.li onClick: @handleAccountMenuReloadPage, 'Reload Page'
                     R.li className: 'separator'
                     R.li onClick: @handleAccountMenuSendFeedback, 'Send Feedback'
                     R.li onClick: @handleAccountMenuHelp, 'Help'

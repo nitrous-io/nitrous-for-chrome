@@ -59,6 +59,9 @@ App.Main = React.createClass
       ideSessions.push(ideSession)
       @setState ideSessions: ideSessions, currentIdeSession: ideSession
 
+    @subSessionsReloadPage = PubSub.subscribe 'sessions.reloadPage', ->
+      $('.app-wrapper.active > webview')[0]?.reload()
+
     @subSessionsSwitch = PubSub.subscribe 'sessions.switch', (msg, sessionId) =>
       ideSession = @state.ideSessions.find((o) -> o.id == sessionId) ? null
       @setState currentIdeSession: ideSession
@@ -94,6 +97,7 @@ App.Main = React.createClass
     PubSub.unsubscribe @subUserLoggedIn
     PubSub.unsubscribe @subUserLogOut
     PubSub.unsubscribe @subSessionsNewIde
+    PubSub.unsubscribe @subSessionsReloadPage
     PubSub.unsubscribe @subSessionsSwitch
     PubSub.unsubscribe @subSessionsClose
     PubSub.unsubscribe @subUiOpenDialog
