@@ -1,4 +1,6 @@
 R = React.DOM
+Rc = React.createElement
+TimeoutTransitionGroup = React.addons.TimeoutTransitionGroup
 
 App.Login = React.createClass
   getInitialState: ->
@@ -9,7 +11,7 @@ App.Login = React.createClass
 
   handleSubmit: (e) ->
     e.preventDefault()
-    @setState(disabled: true, submitLabel: 'Logging In...')
+    @setState(disabled: true, submitLabel: 'Logging In...', errorMessage: null)
 
     elLogin = React.findDOMNode(@refs.login)
     elPassword = React.findDOMNode(@refs.password)
@@ -53,9 +55,12 @@ App.Login = React.createClass
         R.input ref: 'login', type: 'text', placeholder: 'Username or Email', required: true, disabled: @state.disabled
         R.input ref: 'password', type: 'password', placeholder: 'Password', required: true, disabled: @state.disabled
         R.input type: 'submit', value: @state.submitLabel, disabled: @state.disabled
-        R.div className: 'error', @state.errorMessage
       R.ul className: 'links',
         R.li {},
           R.a onClick: @handleSignUp, href: '#', 'Sign Up'
         R.li {},
           R.a onClick: @handleResetPassword, href: '#', 'Reset Password'
+      Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
+        if @state.errorMessage
+          R.div className: 'error', key: 'error',
+            R.p {}, @state.errorMessage
