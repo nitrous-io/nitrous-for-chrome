@@ -42,6 +42,9 @@ App.Dashboard = React.createClass
     @subDashboardGoToRoute = PubSub.subscribe 'dashboard.goToRoute', (msg, route) =>
       App.injectJS(webview, "location.hash = '##{route.replace(/'/g, "\\'")}';")
 
+    @subUserLogout = PubSub.subscribe 'user.logOut', =>
+      App.injectJS(webview, "window.localStorage.clear();")
+
   componentWillUnmount: ->
     PubSub.unsubscribe @subDashboardAccountSettings
     PubSub.unsubscribe @subDashboardBilling
@@ -49,6 +52,7 @@ App.Dashboard = React.createClass
     PubSub.unsubscribe @subDashboardNewContainer
     PubSub.unsubscribe @subDashboardNewWorkspace
     PubSub.unsubscribe @subDashboardGoToRoute
+    PubSub.unsubscribe @subUserLogout
 
   render: ->
     R.div className: classNames('app-wrapper', 'app-dashboard', active: @props.active),
