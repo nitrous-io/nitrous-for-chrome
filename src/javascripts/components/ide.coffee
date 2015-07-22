@@ -37,10 +37,10 @@ App.IDE = React.createClass
           e.preventDefault()
           e.stopPropagation()
           App.injectJS e.target, """
-            if (window.App && App.get && App.get('consoleFocused') && document.activeElement && document.activeElement.tagName === 'IFRAME') {
+            if (window.jQuery && window.App && App.get && App.get('consoleFocused')) {
               var k = new CustomEvent('keydown', { detail: 0, bubbles: true, cancelable: true });
               k.keyCode=#{e.keyCode}; k.which=#{e.which}; k.shiftKey=#{e.shiftKey}; k.ctrlKey=#{e.ctrlKey}; k.metaKey=#{e.metaKey}; k.altKey=#{e.altKey};
-              document.activeElement.contentWindow.NitrousTerminal.term.keyDown(k);
+              jQuery('.ide-console-session-view.active iframe')[0].contentWindow.NitrousTerminal.term.keyDown(k);
             } else if (window.Mousetrap) { Mousetrap.trigger('ctrl+w'); }
           """
 
