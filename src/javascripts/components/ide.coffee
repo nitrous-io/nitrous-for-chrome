@@ -36,7 +36,13 @@ App.IDE = React.createClass
         if e.ctrlKey && e.keyCode == 87 # Ctrl-W
           e.preventDefault()
           e.stopPropagation()
-          App.injectJS e.target, "if (window.Mousetrap) { Mousetrap.trigger('ctrl+w'); }"
+          App.injectJS e.target, """
+            if (window.App && App.get && App.get('consoleFocused') && document.activeElement && document.activeElement.tagName === 'IFRAME') {
+              var k = new CustomEvent('keydown', { detail: 0, bubbles: true, cancelable: true });
+              k.keyCode=#{e.keyCode}; k.which=#{e.which}; k.shiftKey=#{e.shiftKey}; k.ctrlKey=#{e.ctrlKey}; k.metaKey=#{e.metaKey}; k.altKey=#{e.altKey};
+              document.activeElement.contentWindow.NitrousTerminal.term.keyDown(k);
+            } else if (window.Mousetrap) { Mousetrap.trigger('ctrl+w'); }
+          """
 
   componentWillUnmount: ->
     $webview = $(React.findDOMNode(@refs.webview))
