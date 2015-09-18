@@ -6,6 +6,7 @@ App.DialogView = React.createClass
     type: null
     text: null
     ok: null
+    okLabel: 'OK'
     cancel: null
 
   componentDidMount: ->
@@ -51,4 +52,4 @@ App.DialogView = React.createClass
         R.div className: 'buttons',
           if @props.type != 'alert'
             R.button onClick: @handleCancel, 'Cancel'
-          R.button ref: 'ok', onClick: @handleOK, className: 'primary', 'OK'
+          R.button ref: 'ok', onClick: @handleOK, className: 'primary', @props.okLabel

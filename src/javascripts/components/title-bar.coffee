@@ -116,6 +116,7 @@ App.TitleBar = React.createClass
     dialog = new App.Dialog
       type: 'confirm'
       text: "Are you sure you want to close the IDE session for “#{slug}”?\n\nYou will lose any unsaved work."
+      okLabel: 'Close IDE'
       ok: ->
         PubSub.publish('sessions.close', ideSessionId)
     PubSub.publish('ui.openDialog', dialog)
@@ -140,8 +141,7 @@ App.TitleBar = React.createClass
                     R.li onClick: @handleAccountMenuAccountSettings, 'Account Settings'
                     R.li onClick: @handleAccountMenuBilling, 'Billing'
                     R.li className: 'separator'
-                    R.li onClick: @handleAccountMenuReloadPage, 'Reload Page'
-                    R.li className: 'separator'
+                    R.li onClick: @handleAccountMenuReloadPage, 'Reload'
                     R.li onClick: @handleAccountMenuSendFeedback, 'Send Feedback'
                     R.li onClick: @handleAccountMenuHelp, 'Help'
                     R.li className: 'separator'
@@ -149,13 +149,13 @@ App.TitleBar = React.createClass
               R.button onClick: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'account', tabIndex: '-1',
                 R.div className: 'gravatar', style: { backgroundImage: @state.gravatarImage }
                 R.span className: 'username', @props.username
-            R.div className: classNames('new', 'dropdown', open: @state.openMenu == 'new'),
-              Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
-                if @state.openMenu == 'new'
-                  R.ul key: 'new', className: 'ui-dropdown-menu below',
-                    R.li onClick: @handleNewContainer, 'New Container...'
-                    R.li onClick: @handleNewWorkspace, 'New Workspace...'
-              R.button onClick: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'new', tabIndex: '-1'
+#             R.div className: classNames('new', 'dropdown', open: @state.openMenu == 'new'),
+#               Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
+#                 if @state.openMenu == 'new'
+#                   R.ul key: 'new', className: 'ui-dropdown-menu below',
+#                     R.li onClick: @handleNewContainer, 'New Container...'
+#                     R.li onClick: @handleNewWorkspace, 'New Workspace...'
+#               R.button onClick: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'new', tabIndex: '-1'
             R.div className: classNames('sessions', 'dropdown', open: @state.openMenu == 'sessions'),
               Rc TimeoutTransitionGroup, transitionName: 'el', enterTimeout: 101, leaveTimeout: 101, component: 'div',
                 if @state.openMenu == 'sessions'
@@ -166,6 +166,8 @@ App.TitleBar = React.createClass
                       R.li onClick: @handleSessionsMenuIDE, key: ideSession.id, 'data-session-id': ideSession.id, 'data-slug': ideSession.slug,
                         ideSession.slug
                         R.a onClick: @handleSessionsMenuCloseIDE, className: 'close-ide', href: '#', tabIndex: '-1'
+                    R.li className: 'separator'
+                    R.li onClick: @handleNewContainer, 'New Container'
               R.button onClick: @handleMenuButton, onMouseOver: @handleMenuButton, 'data-dropdown-menu': 'sessions', className: classNames(disabled: @props.ideSessions.length == 0), tabIndex: '-1',
                 @props.currentIdeSession?.slug ? 'Dashboard'
 
