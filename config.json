@@ -1,19 +1,19 @@
 {
   "development": {
     "app_name": "Nitrous (development)"
-  , "app_version": "2.0.4"
+  , "app_version": "2.0.5"
   , "host": "https://pro.n2odev.com:7000"
   , "help_url": "http://docs.nitrous.io/"
   }
 , "staging": {
     "app_name": "Nitrous (staging)"
-  , "app_version": "2.0.4"
+  , "app_version": "2.0.5"
   , "host": "https://pro.n2ostaging.com"
   , "help_url": "http://docs.nitrous.io/"
   }
 , "production": {
     "app_name": "Nitrous"
-  , "app_version": "2.0.4"
+  , "app_version": "2.0.5"
   , "host": "https://www.nitrous.io"
   , "help_url": "http://docs.nitrous.io/"
   }
