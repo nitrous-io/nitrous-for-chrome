@@ -118,6 +118,7 @@ App.TitleBar = React.createClass
       text: "Are you sure you want to close the IDE session for “#{slug}”?\n\nYou will lose any unsaved work."
       ok: ->
         PubSub.publish('sessions.close', ideSessionId)
+      okLabel: 'Close IDE'
     PubSub.publish('ui.openDialog', dialog)
 
   handleNewContainer: ->

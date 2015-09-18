@@ -32,7 +32,8 @@ App.Main = React.createClass
       win = chrome.app.window.current()
       dialog = new App.Dialog
         type: 'confirm'
-        text: "Are you sure you want to close Nitrous?\n\nYou will lose any unsaved work."
+        text: "Are you sure you want to close Nitrous?\nYou will lose any unsaved work."
+        okLabel: 'Close Nitrous'
         ok: =>
           @quit()
       win.focus()
@@ -131,4 +132,4 @@ App.Main = React.createClass
             @state.ideSessions.map (ideSession) =>
               Rc App.IDE, key: ideSession.id, url: ideSession.url, ideSessionId: ideSession.id, active: @state.currentIdeSession?.id == ideSession.id
         if @state.dialog
-          Rc App.DialogView, key: 'dialog', type: @state.dialog.type ? 'alert', text: @state.dialog.text, ok: @state.dialog.ok, cancel: @state.dialog.cancel
+          Rc App.DialogView, key: 'dialog', type: @state.dialog.type ? 'alert', text: @state.dialog.text, ok: @state.dialog.ok, okLabel: @state.dialog.okLabel, cancel: @state.dialog.cancel
